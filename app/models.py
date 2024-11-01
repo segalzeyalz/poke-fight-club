@@ -14,3 +14,26 @@ class BattleRequest(BaseModel):
 class BattleResult(BaseModel):
     winner: str
     battle_log: List[str]
+
+
+class Pokemon(BaseModel):
+    id: int
+    name: str
+    hp: int
+    attack: int
+    defense: int
+    special_attack: int
+    special_defense: int
+    speed: int
+    types: List[str]
+    moves: List[str]
+
+    class Config:
+        arbitrary_types_allowed = True
+
+class PokemonData(BaseModel):
+    id: int
+    name: str
+    stats: dict
+    types: list
+    moves: list
