@@ -12,5 +12,5 @@ class MoveHandler:
 
     @staticmethod
     def select_move(pokemon: Pokemon) -> str:
-        # For simplicity, select the first move in the list.
-        return pokemon.moves[0] if pokemon.moves else None
+        first_move = pokemon.moves[0] if pokemon.moves else None
+        return first_move

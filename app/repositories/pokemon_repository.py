@@ -43,7 +43,6 @@ class PokemonRepository:
             type2=types[1] if len(types) > 1 else None
         )
 
-        # Add to database
         db.session.add(pokemon)
         db.session.commit()
 
@@ -54,13 +53,11 @@ class PokemonRepository:
         Update an existing Pokemon in the database.
         If the Pokemon doesn't exist, creates it.
         """
-        # Fix: Use sa.func.lower() for case-insensitive comparison
         pokemon = db.session.scalar(
             sa.select(Pokemon).where(sa.func.lower(Pokemon.name) == name.lower())
         )
 
         if pokemon:
-            # Update existing Pokemon
             pokemon.hp = stats.get('hp', 0)
             pokemon.attack = stats.get('attack', 0)
             pokemon.defense = stats.get('defense', 0)
@@ -73,5 +70,4 @@ class PokemonRepository:
             db.session.commit()
             return PokemonInfo.from_db_model(pokemon)
         else:
-            # Create new Pokemon if it doesn't exist
             return self.create_pokemon(name, types, stats)

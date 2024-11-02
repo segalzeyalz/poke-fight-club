@@ -11,7 +11,7 @@ This project is a Pokémon Battle Simulation API designed to pit two Pokémon ag
 - **Testing**: Includes unit tests for critical components.
 
 ## API Documentation
-Navigate to http://localhost:5000/apidocs to access the API documentation using Swagger UI. The documentation provides details on the available endpoints, request/response formats, and example usage.
+Navigate to http://localhost:5001/apidocs to access the API documentation using Swagger UI. The documentation provides details on the available endpoints, request/response formats, and example usage.
 
 ### Key Directories
 - **`battle_logic`**: Contains the core battle simulation logic, including handling moves and type effectiveness.

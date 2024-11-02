@@ -21,12 +21,10 @@ class PokeAPIService:
                 self.pokemon_urls = cached_mapping
                 return
 
-            # If not in cache, fetch from API
             url = f'{self.base_url}pokemon?offset=0&limit=1302'
             all_pokemon = []
             next_url = url
 
-            # Fetch all pages
             while next_url:
                 response = requests.get(next_url)
                 if response.status_code != 200:
@@ -36,13 +34,11 @@ class PokeAPIService:
                 all_pokemon.extend(data['results'])
                 next_url = data['next']
 
-            # Create the mapping
             self.pokemon_urls = {
                 pokemon['name']: pokemon['url']
                 for pokemon in all_pokemon
             }
 
-            # Cache the mapping
             self.cache_manager.set_pokemon_data('pokemon_url_mapping', self.pokemon_urls)
 
         except Exception as e:
@@ -57,13 +53,10 @@ class PokeAPIService:
 
     def get_pokemon_data(self, pokemon_name: str) -> PokemonData:
         pokemon_name = pokemon_name.lower()  # Normalize name to lowercase
-
-        # Check cache first
         cached_data = self.cache_manager.get_pokemon_data(pokemon_name)
         if cached_data:
             return cached_data
 
-        # If not cached, retrieve from API using the mapped URL
         try:
             url = self.get_pokemon_url(pokemon_name)
             response = requests.get(url)
@@ -77,7 +70,6 @@ class PokeAPIService:
                     types=[t['type']['name'] for t in data['types']],
                     moves=[move['move']['name'] for move in data['moves']]
                 )
-                # Cache the data
                 self.cache_manager.set_pokemon_data(pokemon_name, pokemon_data)
                 return pokemon_data
             else:
@@ -98,20 +90,17 @@ class PokeAPIService:
         if cached_move:
             return cached_move
 
-        # Make API request
         url = f'{self.base_url}move/{move_name}'
         response = requests.get(url)
 
         if response.status_code == 200:
             move_data = response.json()
-            # Extract only the data we need
             simplified_move_data = {
                 'name': move_data['name'],
                 'power': move_data.get('power', 0),
                 'type': move_data['type']['name'],
                 'damage_class': move_data['damage_class']['name']
             }
-            # Cache the simplified data
             self.cache_manager.set_move_data(move_name, simplified_move_data)
             return simplified_move_data
         else:

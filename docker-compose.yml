@@ -8,6 +8,6 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - POKEAPI_BASE_URL=${POKEAPI_BASE_URL}
     ports:
-      - "5000:5000"
+      - "5001:5001"
     volumes:
       - .:/app
