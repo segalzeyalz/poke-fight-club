@@ -24,10 +24,8 @@ class TypeEffectiveness:
         if not attacker_types or not defender_types:
             return 1.0
 
-        # Get the first attacker type (for move's type)
         attacker_type = attacker_types[0]
 
-        # Calculate effectiveness against each defender type
         final_effectiveness = 1.0
         for defender_type in defender_types:
             effectiveness = self.TYPE_EFFECTIVENESS.get(

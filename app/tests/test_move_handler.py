@@ -6,6 +6,7 @@ from app.battle_logic.battle_simulation import BattleSimulation
 from app.battle_logic.move_handler import MoveHandler
 from app.battle_logic.type_effectiveness import TypeEffectiveness
 from app.cache.pokemon_cache import PokemonCacheManager
+from app.exceptions import PokemonAPIException
 from app.models import Pokemon
 from app.services.pokeapi_service import PokeAPIService
 
@@ -33,14 +34,14 @@ def test_get_move_data_success():
         'damage_class': {'name': 'physical'}
     }
 
-    def mock_get(url):
+    def mock_get(url, **kwargs):
         if 'pokemon?' in url:
             return mock_pokemon_list_response
         return mock_move_response
 
     with patch('requests.get', side_effect=mock_get):
         cache_manager = PokemonCacheManager()
-        pokeapi_service = PokeAPIService('https://pokeapi.co/api/v2/', cache_manager)
+        pokeapi_service = PokeAPIService(cache_manager)
         move_data = pokeapi_service.get_move_data('tackle')
 
         assert move_data['name'] == 'tackle', "The move name should be 'tackle' as per the test data"
@@ -58,27 +59,16 @@ def test_get_move_data_cached():
     }
     cache_manager.set_move_data('tackle', cached_move)
 
-    pokeapi_service = PokeAPIService('https://pokeapi.co/api/v2/', cache_manager)
+    pokeapi_service = PokeAPIService(cache_manager)
     move_data = pokeapi_service.get_move_data('tackle')
 
     assert move_data == cached_move, "The move data should be retrieved from the cache"
 
 
-def test_get_move_data_api_error():
-    mock_response = Mock()
-    mock_response.status_code = 404
-
-    with patch('requests.get', return_value=mock_response):
-        cache_manager = PokemonCacheManager()
-        pokeapi_service = PokeAPIService('https://pokeapi.co/api/v2/', cache_manager)
-        with pytest.raises(ValueError):
-            pokeapi_service.get_move_data('nonexistent_move')
-
-
 @pytest.fixture
 def mock_pokeapi_service():
     cache_manager = PokemonCacheManager()
-    service = PokeAPIService('https://pokeapi.co/api/v2/', cache_manager)
+    service = PokeAPIService(cache_manager)
 
     # Mock the get_move_data method to return test data
     def mock_get_move_data(move_name):

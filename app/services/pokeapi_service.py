@@ -1,7 +1,6 @@
-from typing import Dict, List, Optional
+from typing import Dict
 import requests
 from pydash import get
-from toolz import pipe, curry
 from pydantic import ValidationError
 
 from app.config import Config
