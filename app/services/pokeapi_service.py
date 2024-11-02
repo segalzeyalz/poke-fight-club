@@ -1,6 +1,4 @@
-# app/services/pokeapi_service.py
 from pydantic import ValidationError
-from toolz import get
 
 from app.models import PokemonData, Pokemon
 from app.exceptions import (
@@ -57,8 +55,8 @@ class PokeAPIService:
             simplified_move_data = {
                 'name': move_data.get('name'),
                 'power': move_data.get('power', 0),
-                'type': get(['type', 'name'], move_data),
-                'damage_class': get(['damage_class', 'name'], move_data)
+                'type': move_data.get('type', {}).get('name'),
+                'damage_class': move_data.get('damage_class', {}).get('name')
             }
 
             self.cache_manager.set_move_data(move_name, simplified_move_data)

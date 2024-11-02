@@ -1,11 +1,11 @@
 from unittest.mock import Mock
 
-from app.battle_logic import BattleSimulation
+from app.battle_logic.battle_simulation import BattleSimulation
+
 from app.models import Pokemon
 
 
 def test_battle_simulation_creates_detailed_log():
-    # Create test Pokemon
     pokemon1 = Pokemon(
         id=1,
         name="Charizard",
@@ -32,7 +32,6 @@ def test_battle_simulation_creates_detailed_log():
         moves=['solar-beam']
     )
 
-    # Setup battle simulation with mocked services
     mock_type_effectiveness = Mock()
     mock_type_effectiveness.get_type_effectiveness.return_value = 2.0
 
@@ -47,7 +46,6 @@ def test_battle_simulation_creates_detailed_log():
 
     battle_sim = BattleSimulation(mock_type_effectiveness, mock_move_handler)
 
-    # Run battle simulation
     winner, log = battle_sim.simulate_battle(pokemon1, pokemon2)
 
     # Verify log contains expected entries

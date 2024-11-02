@@ -1,5 +1,3 @@
-# app/services/pokemon_service.py
-from app.models import PokemonData
 from app.repositories.pokemon_repository import PokemonRepository
 from app.services.pokeapi_service import PokeAPIService
 
@@ -10,7 +8,6 @@ class PokemonService:
         self.pokeapi_service = pokeapi_service
 
     def get_pokemon_information(self, name: str) -> dict:
-        # Try to get from database first
         pokemon_info = self.pokemon_repository.get_pokemon_by_name(name)
 
         if not pokemon_info:

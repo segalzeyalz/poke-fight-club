@@ -6,9 +6,12 @@ from app.battle_logic.battle_simulation import BattleSimulation
 from app.battle_logic.move_handler import MoveHandler
 from app.battle_logic.type_effectiveness import TypeEffectiveness
 from app.cache.pokemon_cache import PokemonCacheManager
-from app.exceptions import PokemonAPIException
+from app.config import Config
 from app.models import Pokemon
+from app.services.api_client import APIClient
+from app.services.data_tranformer import PokemonDataTransformer
 from app.services.pokeapi_service import PokeAPIService
+from app.services.url_map_service import PokemonURLMapper
 
 
 def test_get_move_data_success():
@@ -41,7 +44,10 @@ def test_get_move_data_success():
 
     with patch('requests.get', side_effect=mock_get):
         cache_manager = PokemonCacheManager()
-        pokeapi_service = PokeAPIService(cache_manager)
+        pokeapi_service = PokeAPIService(cache_manager=cache_manager,
+                                         url_mapper=PokemonURLMapper(cache_manager),
+                                         api_client=APIClient(Config.POKEAPI_BASE_URL),
+                                         data_transformer=PokemonDataTransformer())
         move_data = pokeapi_service.get_move_data('tackle')
 
         assert move_data['name'] == 'tackle', "The move name should be 'tackle' as per the test data"

@@ -25,10 +25,9 @@ class TypeEffectiveness:
 
         final_effectiveness = 1.0
         for attacker_type in attacker_types:
-            attacker_type_name = attacker_type[0]['name'].lower()  # Extracting type name from the tuple
             for defender_type in defender_types:
                 effectiveness = self.TYPE_EFFECTIVENESS.get(
-                    (attacker_type_name, defender_type.lower()),
+                    (attacker_type.lower(), defender_type.lower()),
                     1.0
                 )
                 final_effectiveness *= effectiveness
