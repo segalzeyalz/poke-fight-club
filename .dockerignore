@@ -1,0 +1,11 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+build
+dist
+*.git
+*.idea
+*.sqlite3  # Ignore SQLite database files for clean builds

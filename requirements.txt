@@ -2,7 +2,6 @@ flask
 gunicorn
 pydantic
 aiohttp
-redis
 sqlalchemy
 Flask-SQLAlchemy
 pytest
