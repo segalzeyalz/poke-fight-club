@@ -1,5 +1,4 @@
-from typing import List
-
+from typing import List, Tuple
 
 class TypeEffectiveness:
     TYPE_EFFECTIVENESS = {
@@ -16,7 +15,7 @@ class TypeEffectiveness:
         ("fire", "steel"): 2.0
     }
 
-    def get_type_effectiveness(self, attacker_types: List[str], defender_types: List[str]) -> float:
+    def get_type_effectiveness(self, attacker_types: List[Tuple[str]], defender_types: List[str]) -> float:
         """
         Calculate type effectiveness considering multiple types.
         Returns the product of all type effectiveness multipliers.
@@ -24,14 +23,14 @@ class TypeEffectiveness:
         if not attacker_types or not defender_types:
             return 1.0
 
-        attacker_type = attacker_types[0]
-
         final_effectiveness = 1.0
-        for defender_type in defender_types:
-            effectiveness = self.TYPE_EFFECTIVENESS.get(
-                (attacker_type.lower(), defender_type.lower()),
-                1.0
-            )
-            final_effectiveness *= effectiveness
+        for attacker_type in attacker_types:
+            attacker_type_name = attacker_type[0]['name'].lower()  # Extracting type name from the tuple
+            for defender_type in defender_types:
+                effectiveness = self.TYPE_EFFECTIVENESS.get(
+                    (attacker_type_name, defender_type.lower()),
+                    1.0
+                )
+                final_effectiveness *= effectiveness
 
         return final_effectiveness
