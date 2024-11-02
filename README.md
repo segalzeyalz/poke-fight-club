@@ -1,59 +1,168 @@
 # Pokémon Battle Simulation API
 
-This project is a Pokémon Battle Simulation API designed to pit two Pokémon against each other in a turn-based battle. It uses data from the [PokeAPI](https://pokeapi.co/) to fetch Pokémon details, simulates battles based on Pokémon attributes, and saves battle data in a database. The project is designed with modularity and containerization in mind, using Docker for easy deployment.
+This project is a Pokémon Battle Simulation API that enables turn-based battles between Pokémon. It integrates with [PokeAPI](https://pokeapi.co/) for data enrichment and includes containerization for easy deployment.
 
 ## Features
-- **Battle Simulation**: Simulates turn-by-turn Pokémon battles based on stats such as HP, Attack, Defense, and more.
-- **External API Integration**: Fetches Pokémon data from PokeAPI to enrich battle simulations.
-- **Data Persistence**: Saves battle history in a database.
-- **Caching**: Caches Pokémon data to reduce API calls and improve performance.
-- **Error Handling**: Provides robust error handling for various scenarios.
-- **Testing**: Includes unit tests for critical components.
+- **Battle Simulation**: Turn-based battles using Pokémon stats (HP, Attack, Defense)
+- **External API Integration**: Real-time data from PokeAPI
+- **Data Persistence**: Battle history storage
+- **Caching**: Optimized API performance
+- **Error Handling**: Comprehensive error management
+- **Testing**: Unit and integration test coverage
 
-## API Documentation
-Navigate to http://localhost:5001/apidocs to access the API documentation using Swagger UI. The documentation provides details on the available endpoints, request/response formats, and example usage.
+## Quick Start
+
+### Installation
+1. Clone the repository:
+```bash
+git clone https://github.com/segalzeyalz/poke-fight-club.git
+cd poke-fight-club
+```
+
+2. Build and start containers:
+```bash
+docker-compose up --build
+```
+
+3. Access the API:
+```plaintext
+API: http://localhost:5001
+Swagger UI: http://localhost:5001/apidocs
+```
+
+### API Access Points
+All API endpoints are accessible through port 5001. For example:
+- API Base URL: `http://localhost:5001`
+- Swagger Documentation: `http://localhost:5001/apidocs`
+- Battle Endpoint: `http://localhost:5001/battle`
+- Pokemon Information: `http://localhost:5001/pokemon/{name}`
+
+
+## Project Structure
 
 ### Key Directories
-- **`battle_logic`**: Contains the core battle simulation logic, including handling moves and type effectiveness.
-- **`database`**: Sets up the database schema and models, storing Pokémon and battle data.
-- **`repositories`**: Manages data access, with `pokemon_repository.py` for Pokémon data and `battle_repository.py` for battle records.
-- **`services`**: Implements business logic, calling external APIs and coordinating battle sequences.
-- **`routes`**: Defines the API endpoints for battle initiation and Pokémon information retrieval.
-- **`tests`**: Contains unit tests for the API, battle logic, repositories, and routes.
-
-### Running the API Instructions
-Build the Docker Container: Ensure Docker is installed and running.
-
-```bash
-docker-compose build
-``` 
-Accessing the API: Once the container is up, the API should be accessible at http://localhost:8000.
-
-### API Endpoints
-- **POST `/battle`:** Initiates a battle between two Pokémon. Request body:
-```json
-{
-    "pokemon1": "charmander",
-    "pokemon2": "squirtle"
-}
-```
-Response:
-```json
-{
-    "winner": "charmander",
-    "log": [
-        "charmander used Ember! It's super effective! Squirtle fainted.",
-        "charmander wins!"
-    ]
-}
+```plaintext
+app/
+├── battle_logic/          # Battle simulation core
+├── database/             # Data models and schema
+├── repositories/         # Data access layer
+├── services/            # Business logic
+├── routes/              # API endpoints
+└── tests/              # Test suites
 ```
 
-## Trade-offs and Future Improvements
-1. **Pokémon State Management During Battles**: Currently, Pokémon state is stored in memory during battles. For scalability, consider storing state in a database or cache. Moreover, this is not reflected in pokemon fetches too
-The main reason is the will to make it finished with all the endpoint and with the right structure.
-2. ** Scalability and Concurrency**: The project is designed for single-instance battle simulations. Concurrent battles might cause performance issues and database contention. Additionally, multiple instances of the same Pokemon in parallel battles are not supported.
-** Proposed Solution**: Implement a queue system to manage battle requests and distribute them across multiple worker instances. Use a distributed cache for storing Pokémon data and battle states.
-I would use SNS and PostgreSQL as PostgreSQL offers robust transactions and advanced data integrity features.
-Amazon SNS queues battle requests, allowing the application to handle high volume without overwhelming resources.
-3. **Error Handling and Logging**: The project currently has basic error handling and logging. For production use, implement more robust error handling, logging, and monitoring to track issues and performance.
-** Proposed Solution**: Use a logging library like Loguru or Python's built-in logging module to log errors, warnings, and information. Implement exception handling middleware to catch and log errors in the API.
+### Component Details
+- **`battle_logic/`**: 
+  - Turn-based battle system
+  - Type effectiveness calculations
+  - Move damage computations
+
+- **`database/`**: 
+  - SQLite database (development)
+  - Models for Pokémon and battles
+  - Migration scripts
+
+- **`repositories/`**: 
+  - Pokémon data management
+  - Battle record storage
+  - Data access patterns
+
+- **`services/`**: 
+  - PokeAPI integration
+  - Battle orchestration
+  - Data transformation
+
+
+### Current Architecture Trade-offs
+
+1. **Database Choice (SQLite)**
+   - **Current Implementation**: Using SQLite for simplicity and development speed
+   - **Production Improvement**: 
+     - Implement PostgreSQL with docker-compose
+     - Offers robust transaction support and concurrent access
+     - Better suited for containerized environments
+     - Supports connection pooling for better resource management
+
+2. **Repository Pattern Implementation**
+   - **Current Implementation**: PokemonRepository handling multiple responsibilities
+   - **Production Improvement**: 
+     - Implement Factory Pattern with specialized classes:
+       ```python
+       class PokemonReader:
+           def get_by_name(self, name: str): pass
+       
+       class PokemonWriter:
+           def create(self, data: Dict): pass
+       
+       class PokemonUpdater:
+           def update(self, name: str, data: Dict): pass
+       ```
+
+3. **PokeAPI Service Structure**
+   - **Current Implementation**: Single service handling API calls, caching, and transformations
+   - **Production Improvement**: 
+     - Split into dedicated services:
+     ```python
+     class PokemonDataFetcher:
+         def fetch_pokemon(self): pass
+     
+     class PokemonDataTransformer:
+         def transform(self): pass
+     
+     class PokemonCacheManager:
+         def manage_cache(self): pass
+     ```
+
+4. **Request Processing**
+   - **Current Implementation**: Synchronous request processing
+   - **Production Improvement**: 
+     - Implement AWS SQS for battle requests:
+       - Asynchronous processing
+       - Better load handling
+       - Automatic retry mechanism
+     ```python
+     class BattleQueue:
+         def __init__(self):
+             self.sqs = boto3.client('sqs')
+             
+         def enqueue_battle(self, battle_data):
+             return self.sqs.send_message(
+                 QueueUrl=QUEUE_URL,
+                 MessageBody=json.dumps(battle_data)
+             )
+     ```
+
+5. **Load Distribution**
+   - **Current Implementation**: Single container deployment
+   - **Production Improvement**: 
+     - Kubernetes deployment with:
+       - Horizontal Pod Autoscaling
+       - Load balancing
+       - Health checks
+       - Rolling updates
+     ```yaml
+     apiVersion: autoscaling/v2
+     kind: HorizontalPodAutoscaler
+     metadata:
+       name: pokemon-battle-api
+     spec:
+       scaleTargetRef:
+         apiVersion: apps/v1
+         kind: Deployment
+         name: pokemon-battle-api
+       minReplicas: 2
+       maxReplicas: 10
+     ```
+
+6. **Caching Strategy**
+   - **Current Implementation**: Basic in-memory caching
+   - **Production Improvement**: 
+     - Implement Python cachetools with TTL:
+       - Thread-safe operations
+       - Automatic cache invalidation
+       - Memory usage control
+     ```python
+     from cachetools import TTLCache
+     
+     cache = TTLCache(maxsize=100, ttl=3600)
+     ```
