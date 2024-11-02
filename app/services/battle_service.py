@@ -18,17 +18,16 @@ class BattleService:
         pokemon1 = self.pokeapi_service.transform_pokemon_data(pokemon1_data)
         pokemon2 = self.pokeapi_service.transform_pokemon_data(pokemon2_data)
 
-        battle_sim = self.battle_simulation
-        winner, battle_log = battle_sim.simulate_battle(pokemon1, pokemon2)
+        winner, battle_log = self.battle_simulation.simulate_battle(pokemon1, pokemon2)
 
-        # Store battle result in the database
         battle_result = Battle(
             pokemon1_id=pokemon1.id,
             pokemon2_id=pokemon2.id,
-            winner=winner,
-            battle_log=battle_log
+            winner=winner
         )
+        battle_result.set_battle_log(battle_log)
+
         db.session.add(battle_result)
         db.session.commit()
 
-        return BattleResult(winner=winner, battle_log=log)
+        return BattleResult(winner=winner, battle_log=battle_log)

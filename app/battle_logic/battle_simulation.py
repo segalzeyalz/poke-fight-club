@@ -11,16 +11,12 @@ class BattleSimulation:
         self.move_handler = move_handler
 
     def simulate_battle(self, pokemon1: Pokemon, pokemon2: Pokemon) -> Tuple[str, List[str]]:
-        """
-        Simulate a battle between two Pokémon.
-        :param pokemon1:
-        :param pokemon2:
-        :return:
-        """
         battle_log = []
 
         while pokemon1.hp > 0 and pokemon2.hp > 0:
             damage = self.calculate_damage(pokemon1, pokemon2)
+            if damage > pokemon2.hp:
+                damage = pokemon2.hp # Ensure that the damage dealt is not greater than the remaining HP
             pokemon2.hp -= damage
             battle_log.append(f"{pokemon1.name} dealt {damage} damage to {pokemon2.name}. Remaining HP: {pokemon2.hp}")
             if pokemon2.hp <= 0:
@@ -28,12 +24,13 @@ class BattleSimulation:
 
             # Pokémon 2 attacks Pokémon 1
             damage = self.calculate_damage(pokemon2, pokemon1)
+            if damage > pokemon1.hp:
+                damage = pokemon1.hp
             pokemon1.hp -= damage
             battle_log.append(f"{pokemon2.name} dealt {damage} damage to {pokemon1.name}. Remaining HP: {pokemon1.hp}")
             if pokemon1.hp <= 0:
                 return pokemon2.name, battle_log
 
-    # app/battle_logic/battle_simulation.py
     def calculate_damage(self, attacker: Pokemon, defender: Pokemon) -> int:
         """
         Calculate the damage dealt by the attacker to the defender.
