@@ -69,5 +69,4 @@ class PokemonRepository:
 
             db.session.commit()
             return PokemonInfo.from_db_model(pokemon)
-        else:
-            return self.create_pokemon(name, types, stats)
+        return self.create_pokemon(name, types, stats)

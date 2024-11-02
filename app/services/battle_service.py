@@ -9,11 +9,9 @@ class BattleService:
         self.battle_simulation = battle_simulation
 
     def create_battle(self, pokemon1_name: str, pokemon2_name: str) -> BattleResult:
-        # Retrieve or cache Pokémon data
         pokemon1_data = self.pokeapi_service.get_pokemon_data(pokemon1_name)
         pokemon2_data = self.pokeapi_service.get_pokemon_data(pokemon2_name)
 
-        # Transform to Pokemon objects for battle
         pokemon1 = self.pokeapi_service.transform_pokemon_data(pokemon1_data)
         pokemon2 = self.pokeapi_service.transform_pokemon_data(pokemon2_data)
 
