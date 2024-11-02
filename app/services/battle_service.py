@@ -1,5 +1,5 @@
 from app.repositories.battle_repository import BattleRepository
-from app.services.pokeapi_service import PokeAPIService
+from app.services.pokeapi_service import PokeAPIService, POKEMON_NOT_FOUND
 from app.battle_logic.battle_simulation import BattleSimulation
 from app.models import BattleResult
 
@@ -12,6 +12,8 @@ class BattleService:
         # Retrieve or cache Pokémon data
         pokemon1_data = self.pokeapi_service.get_pokemon_data(pokemon1_name)
         pokemon2_data = self.pokeapi_service.get_pokemon_data(pokemon2_name)
+        if pokemon1_data == POKEMON_NOT_FOUND or pokemon2_data == POKEMON_NOT_FOUND:
+            return POKEMON_NOT_FOUND
 
         # Transform to Pokemon objects for battle
         pokemon1 = self.pokeapi_service.transform_pokemon_data(pokemon1_data)

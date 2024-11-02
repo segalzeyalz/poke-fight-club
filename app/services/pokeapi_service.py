@@ -4,6 +4,7 @@ from pydantic import ValidationError
 from app.cache.pokemon_cache import PokemonCacheManager
 from app.models import PokemonData, Pokemon
 
+POKEMON_NOT_FOUND = "Pokemon not found"
 
 class PokeAPIService:
     def __init__(self, base_url: str, cache_manager: PokemonCacheManager):
@@ -48,7 +49,7 @@ class PokeAPIService:
         """Get the URL for a specific Pokemon."""
         pokemon_name = pokemon_name.lower()  # Normalize name to lowercase
         if pokemon_name not in self.pokemon_urls:
-            raise ValueError(f"Pokemon {pokemon_name} not found")
+            return POKEMON_NOT_FOUND
         return self.pokemon_urls[pokemon_name]
 
     def get_pokemon_data(self, pokemon_name: str) -> PokemonData:
@@ -59,6 +60,8 @@ class PokeAPIService:
 
         try:
             url = self.get_pokemon_url(pokemon_name)
+            if url == POKEMON_NOT_FOUND:
+                raise ValueError(f"Pokemon {pokemon_name} not found")
             response = requests.get(url)
 
             if response.status_code == 200:

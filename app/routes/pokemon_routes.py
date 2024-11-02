@@ -8,7 +8,7 @@ from app.services.pokeapi_service import PokeAPIService
 
 @pokemon_bp.route('/pokemon/<string:name>', methods=['GET'])
 def get_pokemon(name):
-    """
+    """`
     Retrieve information for a specified Pokémon.
     ---
     tags:
