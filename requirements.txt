@@ -5,6 +5,8 @@ aiohttp
 gunicorn
 sqlalchemy
 Flask-SQLAlchemy
+pydash
+toolz
 pytest
 requests
 flasgger

@@ -1,6 +1,7 @@
 from flask import jsonify
 
 from app.cache.pokemon_cache import PokemonCacheManager
+from app.exceptions import PokemonNotFoundException
 from app.repositories.pokemon_repository import PokemonRepository
 from app.routes import pokemon_bp
 from app.services.pokeapi_service import PokeAPIService
@@ -61,18 +62,17 @@ def get_pokemon(name):
     """
     pokemon_repository = PokemonRepository()
 
-    # Try to get Pokemon from database
     pokemon_info = pokemon_repository.get_pokemon_by_name(name)
 
     if not pokemon_info:
-        # If not in database, fetch from PokeAPI
         pokemon_api_service = PokeAPIService(
-            base_url='https://pokeapi.co/api/v2/',
             cache_manager=PokemonCacheManager()
         )
-        api_pokemon_info = pokemon_api_service.get_pokemon_data(name)
+        try:
+            api_pokemon_info = pokemon_api_service.get_pokemon_data(name)
+        except PokemonNotFoundException as e:
+            return jsonify({'error': f'Pokemon {e.pokemon_name} not found'}), 404
 
-        # Store in database
         pokemon_info = pokemon_repository.create_pokemon(
             name=api_pokemon_info.name,
             types=api_pokemon_info.types,

@@ -17,7 +17,7 @@ def create_app():
     app.config.from_object(Config)
 
     cache_manager = PokemonCacheManager()
-    pokemon_api_service = PokeAPIService(base_url='https://pokeapi.co/api/v2/', cache_manager=cache_manager)
+    pokemon_api_service = PokeAPIService(cache_manager=cache_manager)
     type_effectiveness_service = TypeEffectiveness()
     move_handler = MoveHandler(pokemon_api_service)
     battle_simulation = BattleSimulation(type_effectiveness_service=type_effectiveness_service,

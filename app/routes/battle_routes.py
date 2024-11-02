@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
-from app.models import BattleRequest
-from app.services.pokeapi_service import POKEMON_NOT_FOUND
 
+from app.exceptions import PokemonNotFoundException
+from app.models import BattleRequest
 
 def create_battle_blueprint(battle_service):
     battle_bp = Blueprint('battle', __name__)
@@ -44,9 +44,11 @@ def create_battle_blueprint(battle_service):
             description: Internal server error
         """
         battle_request = BattleRequest(**request.json)
-        battle_result = battle_service.create_battle(battle_request.pokemon1, battle_request.pokemon2)
-        if battle_result == POKEMON_NOT_FOUND:
-            return jsonify({'message': 'One or more Pokémon not found'}), 404
+        try:
+            battle_result = battle_service.create_battle(battle_request.pokemon1, battle_request.pokemon2)
+        except PokemonNotFoundException as e:
+            return jsonify({'error': f'Pokemon {e.pokemon_name} not found'}), 404
+
         return jsonify(battle_result.dict()), 201
 
     return battle_bp
