@@ -1,10 +1,9 @@
 from typing import Dict
 
 from app.models import Pokemon
-from app.services.pokeapi_service import PokeAPIService
 
 class MoveHandler:
-    def __init__(self, pokeapi_service: PokeAPIService):
+    def __init__(self, pokeapi_service: "PokeAPIService"):
         self.pokeapi_service = pokeapi_service
 
     def get_move_data(self, move_name: str) -> Dict:

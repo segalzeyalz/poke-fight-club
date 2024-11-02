@@ -1,6 +1,7 @@
 from flask import request, jsonify
 
-from app.battle_logic import BattleSimulation
+from app.battle_logic.battle_simulation import BattleSimulation
+
 from app.battle_logic.move_handler import MoveHandler
 from app.battle_logic.type_effectiveness import TypeEffectiveness
 from app.cache.pokemon_cache import PokemonCacheManager
