@@ -57,8 +57,6 @@ def create_pokemon_blueprint(pokemon_service: PokemonService) -> Blueprint:
         responses:
           404:
             description: Pokémon not found
-          500:
-            description: Internal server error
         """
         try:
             pokemon_info = pokemon_service.get_pokemon_information(name)

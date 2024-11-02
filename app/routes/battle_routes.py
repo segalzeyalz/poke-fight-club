@@ -40,8 +40,6 @@ def create_battle_blueprint(battle_service):
                   description: Battle events log
           404:
             description: Pokémon not found
-          500:
-            description: Internal server error
         """
         battle_request = BattleRequest(**request.json)
         try:
