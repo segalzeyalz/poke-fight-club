@@ -21,13 +21,8 @@ cd poke-fight-club
 
 2. Build and start containers:
 ```bash
-docker-compose up --build
-```
-
-3. Access the API:
-```plaintext
-API: http://localhost:5001
-Swagger UI: http://localhost:5001/apidocs
+docker build -t flask-app .
+docker run -p 5001:5001 flask-app
 ```
 
 ### API Access Points
@@ -98,22 +93,7 @@ app/
            def update(self, name: str, data: Dict): pass
        ```
 
-3. **PokeAPI Service Structure**
-   - **Current Implementation**: Single service handling API calls, caching, and transformations
-   - **Production Improvement**: 
-     - Split into dedicated services:
-     ```python
-     class PokemonDataFetcher:
-         def fetch_pokemon(self): pass
-     
-     class PokemonDataTransformer:
-         def transform(self): pass
-     
-     class PokemonCacheManager:
-         def manage_cache(self): pass
-     ```
-
-4. **Request Processing**
+3. **Request Processing**
    - **Current Implementation**: Synchronous request processing
    - **Production Improvement**: 
      - Implement AWS SQS for battle requests:
@@ -132,7 +112,7 @@ app/
              )
      ```
 
-5. **Load Distribution**
+4. **Load Distribution**
    - **Current Implementation**: Single container deployment
    - **Production Improvement**: 
      - Kubernetes deployment with:
@@ -154,7 +134,7 @@ app/
        maxReplicas: 10
      ```
 
-6. **Caching Strategy**
+5. **Caching Strategy**
    - **Current Implementation**: Basic in-memory caching
    - **Production Improvement**: 
      - Implement Python cachetools with TTL:
@@ -166,3 +146,75 @@ app/
      
      cache = TTLCache(maxsize=100, ttl=3600)
      ```
+
+6. **Security Enhancements**
+   1. API Rate Limiting 
+       - **Current Implementation**: None
+       - **Production Improvement**: 
+         - rate-limiting middleware like flask-limiter to limit requests per user or IP
+    2. Authentication & Authorization
+       - **Current Implementation**: None
+       - **Production Improvement**:  Implement JWT to validate requests, using Flask-JWT.
+
+7. **Enhanced Observability**
+   1. **Logging and Monitoring**
+      - **Current Implementation**: Basic logging
+      - **Production Improvement**:
+        - Implement structured logging  in JSON format for compatibility with log aggregation tools.
+        - Integrate splunk for logging services
+
+   2. **Tracing**
+      - **Current Implementation**: None
+      - **Production Improvement**:
+        - Use distributed tracing with **OpenTelemetry**.
+        - This allows tracking each stage of a request and provides more in-depth diagnostics during debugging.
+
+   3. **Metrics Collection**
+      - **Current Implementation**: None
+      - **Production Improvement**:
+        - Integrate **Prometheus** with **Grafana** for tracking key metrics like request latencies, API response times, cache hit/miss ratios, and error rates.
+
+8. **Developer Experience Improvements**
+   1. **CI/CD Pipeline**
+      - **Current Implementation**: None
+      - **Production Improvement**:
+        - Set up a CI/CD pipeline using **GitHub Actions** with testing + deployemnt after pull requests to master using argo-cd.
+        - This pipeline would run unit and integration tests automatically on each pull request, and deploy changes to staging or production upon successful test completion.
+   
+   2. **Automated Testing and Test Coverage**
+      - **Current Implementation**: Basic unit and integration testing
+      - **Production Improvement**:
+        - Extend test suite with load testing (e.g., using `locust` or `k6`) to ensure the API can handle expected traffic.
+        - Integrate test coverage tracking to identify untested paths in the code and improve reliability for critical battle logic.
+
+9. **Resilience and Disaster Recovery**
+   1. **Database Backups and Recovery**
+      - **Current Implementation**: None
+      - **Production Improvement**:
+        - Schedule automated PostgreSQL backups stored in **AWS S3** or another reliable storage service.
+        - Implement periodic restoration tests to verify backup integrity and ensure quick recovery in case of data loss or corruption.
+   
+   2. **Graceful Degradation**
+      - **Current Implementation**: None
+      - **Production Improvement**:
+        - Implement a fallback mechanism for external dependencies (e.g., PokeAPI). When external services are unavailable, serve cached data if available or queue requests for later processing.
+        - Display a "Service Unavailable" message or a cached response to prevent service disruption during outages.
+
+10. **Enhanced Deployment Flexibility**
+   1. **Multi-Region Deployment for High Availability**
+      - **Current Implementation**: Single-region deployment
+      - **Production Improvement**:
+        - Deploy across multiple regions with a global load balancer (e.g., **AWS Global Accelerator** or **Cloudflare Load Balancer**) to ensure high availability and reduced latency.
+        - Configure automatic failover between regions for uninterrupted service during outages in one region.
+
+   2. **Container Orchestration with Helm Charts**
+      - **Current Implementation**: Basic Kubernetes configuration
+      - **Production Improvement**:
+        - Use **Helm** to package Kubernetes configurations into reusable charts, making it easier to configure, upgrade, and roll back deployments.
+        - Helm simplifies multi-environment deployments by allowing parameterized configurations for development, staging, and production environments.
+
+11. **Enhanced Data Model for Pokémon Moves**
+      - **Current Implementation**: Pokémon moves stored as list in Pokémon model
+      - **Production Improvement**:
+        - Refactor database schema to store moves in a separate `moves` table with attributes such as `power`, `accuracy`, `type`, and `damage_class`.
+        - This improves flexibility and makes querying and managing individual moves easier, especially if future requirements include move updates or expansions.
