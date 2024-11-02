@@ -6,3 +6,4 @@ sqlalchemy
 Flask-SQLAlchemy
 pytest
 requests
+flasgger

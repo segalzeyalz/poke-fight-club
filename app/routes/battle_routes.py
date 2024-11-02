@@ -12,6 +12,41 @@ from app.services.pokeapi_service import PokeAPIService
 
 @battle_bp.route('/battles', methods=['POST'])
 def create_battle():
+    """
+    Start a Pokémon battle between two specified Pokémon.
+    ---
+    tags:
+      - Battles
+    parameters:
+      - name: pokemon1_name
+        in: formData
+        type: string
+        required: true
+        description: Name of the first Pokémon
+      - name: pokemon2_name
+        in: formData
+        type: string
+        required: true
+        description: Name of the second Pokémon
+    responses:
+      200:
+        description: Battle result with winner and battle log
+        schema:
+          type: object
+          properties:
+            winner:
+              type: string
+              description: Name of the winning Pokémon
+            battle_log:
+              type: array
+              items:
+                type: string
+              description: Battle events log
+      404:
+        description: Pokémon not found
+      500:
+        description: Internal server error
+    """
     battle_request = BattleRequest(**request.json)
     cache_manager = PokemonCacheManager()
     pokemon_api_service = PokeAPIService(base_url='https://pokeapi.co/api/v2/', cache_manager=cache_manager)
