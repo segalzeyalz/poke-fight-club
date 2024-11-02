@@ -12,7 +12,6 @@ from app.services.pokeapi_service import PokeAPIService
 def test_get_move_data_success():
     """
     Test the get_move_data method of the PokeAPIService class.
-    :return:
     """
     mock_pokemon_list_response = Mock()
     mock_pokemon_list_response.status_code = 200
@@ -43,10 +42,10 @@ def test_get_move_data_success():
         pokeapi_service = PokeAPIService('https://pokeapi.co/api/v2/', cache_manager)
         move_data = pokeapi_service.get_move_data('tackle')
 
-        assert move_data['name'] == 'tackle'
-        assert move_data['power'] == 40
-        assert move_data['type'] == 'normal'
-        assert move_data['damage_class'] == 'physical'
+        assert move_data['name'] == 'tackle', "The move name should be 'tackle' as per the test data"
+        assert move_data['power'] == 40, "The move power should be 40 as per the test data"
+        assert move_data['type'] == 'normal', "The move type should be 'normal' as per the test data"
+        assert move_data['damage_class'] == 'physical', "The move damage class should be 'physical' as per the test data"
 
 def test_get_move_data_cached():
     cache_manager = PokemonCacheManager()
@@ -61,7 +60,7 @@ def test_get_move_data_cached():
     pokeapi_service = PokeAPIService('https://pokeapi.co/api/v2/', cache_manager)
     move_data = pokeapi_service.get_move_data('tackle')
 
-    assert move_data == cached_move
+    assert move_data == cached_move, "The move data should be retrieved from the cache"
 
 
 def test_get_move_data_api_error():
@@ -132,10 +131,6 @@ def test_damage_calculation(mock_pokeapi_service):
     battle_sim = BattleSimulation(TypeEffectiveness(), move_handler)
     damage = battle_sim.calculate_damage(attacker, defender)
 
-    assert damage > 0  # Basic sanity check
+    assert damage > 0, "Damage should be greater than 0 because the move is super effective against Grass, special attack is used, and the move has good base power"
 
-    # The damage should be higher because:
-    # 1. Fire is super effective against Grass
-    # 2. Using special attack which is higher than physical attack
-    # 3. Flamethrower has good base power
-    assert damage > 50  # More specific check based on the expected damage range
+    assert damage > 50, "Damage should be high because the move is super effective against Grass, special attack is used, and the move has good base power"
