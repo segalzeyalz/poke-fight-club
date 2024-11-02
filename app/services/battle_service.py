@@ -1,7 +1,6 @@
+from app.repositories.battle_repository import BattleRepository
 from app.services.pokeapi_service import PokeAPIService
 from app.battle_logic.battle_simulation import BattleSimulation
-from app.database.models import Battle
-from app.database import db
 from app.models import BattleResult
 
 class BattleService:
@@ -20,14 +19,6 @@ class BattleService:
 
         winner, battle_log = self.battle_simulation.simulate_battle(pokemon1, pokemon2)
 
-        battle_result = Battle(
-            pokemon1_id=pokemon1.id,
-            pokemon2_id=pokemon2.id,
-            winner=winner
-        )
-        battle_result.set_battle_log(battle_log)
-
-        db.session.add(battle_result)
-        db.session.commit()
+        BattleRepository.create_battle(pokemon1.id, pokemon2.id, winner, battle_log)
 
         return BattleResult(winner=winner, battle_log=battle_log)
