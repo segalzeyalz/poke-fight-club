@@ -1,9 +1,6 @@
-from app.battle_logic.move_handler import MoveHandler
-from app.battle_logic.type_effectiveness import TypeEffectiveness
-from app.cache.cache import CacheManager
 from app.services.pokeapi_service import PokeAPIService
 from app.battle_logic.battle_simulation import BattleSimulation
-from app.database.models.battle import BattleModel
+from app.database.models import Battle
 from app.database import db
 from app.models import BattleResult
 
@@ -25,7 +22,7 @@ class BattleService:
         winner, battle_log = battle_sim.simulate_battle(pokemon1, pokemon2)
 
         # Store battle result in the database
-        battle_result = BattleModel(
+        battle_result = Battle(
             pokemon1_id=pokemon1.id,
             pokemon2_id=pokemon2.id,
             winner=winner,

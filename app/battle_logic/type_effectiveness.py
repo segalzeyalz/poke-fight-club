@@ -1,10 +1,39 @@
+from typing import List
+
+
 class TypeEffectiveness:
     TYPE_EFFECTIVENESS = {
+        ("normal", "rock"): 0.5,
+        ("normal", "ghost"): 0,
+        ("normal", "steel"): 0.5,
+        ("fire", "fire"): 0.5,
+        ("fire", "water"): 0.5,
         ("fire", "grass"): 2.0,
-        ("grass", "water"): 2.0,
-        ("water", "fire"): 2.0,
-        # Add more type combinations as necessary
+        ("fire", "ice"): 2.0,
+        ("fire", "bug"): 2.0,
+        ("fire", "rock"): 0.5,
+        ("fire", "dragon"): 0.5,
+        ("fire", "steel"): 2.0
     }
 
-    def get_type_effectiveness(self, attacker_type: str, defender_type: str) -> float:
-        return self.TYPE_EFFECTIVENESS.get((attacker_type, defender_type), 1.0)
+    def get_type_effectiveness(self, attacker_types: List[str], defender_types: List[str]) -> float:
+        """
+        Calculate type effectiveness considering multiple types.
+        Returns the product of all type effectiveness multipliers.
+        """
+        if not attacker_types or not defender_types:
+            return 1.0
+
+        # Get the first attacker type (for move's type)
+        attacker_type = attacker_types[0]
+
+        # Calculate effectiveness against each defender type
+        final_effectiveness = 1.0
+        for defender_type in defender_types:
+            effectiveness = self.TYPE_EFFECTIVENESS.get(
+                (attacker_type.lower(), defender_type.lower()),
+                1.0
+            )
+            final_effectiveness *= effectiveness
+
+        return final_effectiveness

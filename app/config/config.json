@@ -1,5 +1,4 @@
 {
   "POKEAPI_BASE_URL": "https://pokeapi.co/api/v2",
-  "DATABASE_URL": "postgresql://user:password@localhost/pokemon_db",
-  "CACHE_URL": "redis://localhost"
+  "DATABASE_URL": "sqlite:///pokemon_battle.db"
 }

@@ -4,6 +4,6 @@ pydantic
 aiohttp
 redis
 sqlalchemy
-psycopg2-binary
+Flask-SQLAlchemy
 pytest
 requests

@@ -1,4 +1,4 @@
-# Initialize database connection
-from app.database.db import Database
+from flask_sqlalchemy import SQLAlchemy
 
-db = Database('pokemon_battle.db')
+# Initialize SQLAlchemy
+db = SQLAlchemy()

@@ -2,19 +2,12 @@ version: '3'
 services:
   app:
     build: .
+    container_name: pokemon_battle_app
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=${DATABASE_URL}
+      - POKEAPI_BASE_URL=${POKEAPI_BASE_URL}
     ports:
-      - "8000:8000"
-    depends_on:
-      - db
-      - cache
-    environment:
-      - DATABASE_URL=postgresql://user:password@db/pokemon_db
-      - CACHE_URL=redis://cache
-  db:
-    image: postgres
-    environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=pokemon_db
-  cache:
-    image: redis
+      - "5000:5000"
+    volumes:
+      - .:/app

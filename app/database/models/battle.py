@@ -1,15 +1,11 @@
 from app.database import db
+from sqlalchemy import Column, Integer, String, Text
 
-class BattleModel(db.Model):
-    __tablename__ = "battles"
-    id = db.Column(db.Integer, primary_key=True)
-    pokemon1_id = db.Column(db.Integer)
-    pokemon2_id = db.Column(db.Integer)
-    winner = db.Column(db.String)
-    battle_log = db.Column(db.Text)
+class Battle(db.Model):
+    __tablename__ = 'battles'
 
-    def __init__(self, pokemon1_id: int, pokemon2_id: int, winner, battle_log):
-        self.pokemon1_id = pokemon1_id
-        self.pokemon2_id = pokemon2_id
-        self.winner = winner
-        self.battle_log = battle_log
+    id = Column(Integer, primary_key=True)
+    pokemon1_id = Column(Integer, nullable=False)
+    pokemon2_id = Column(Integer, nullable=False)
+    winner = Column(String(50), nullable=False)
+    log = Column(Text, nullable=False)
