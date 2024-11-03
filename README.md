@@ -7,8 +7,8 @@ This project is a Pokémon Battle Simulation API that enables turn-based battles
 - **External API Integration**: Real-time data from PokeAPI
 - **Data Persistence**: Battle history storage
 - **Caching**: Optimized API performance
-- **Error Handling**: Comprehensive error management
-- **Testing**: Unit and integration test coverage
+- **Error Handling**: Comprehensive error management using Pydentic
+- **Testing**: Unit test coverage
 
 ## Quick Start
 
