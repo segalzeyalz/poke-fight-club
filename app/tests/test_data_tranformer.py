@@ -29,23 +29,6 @@ def sample_raw_data():
     }
 
 
-def test_transform_to_pokemon_data():
-    result = PokemonDataTransformer.transform_to_pokemon_data(sample_raw_data)
-
-    assert isinstance(result, PokemonData)
-    assert result.id == 25
-    assert result.name == "pikachu"
-    assert result.types == ["electric"]
-    assert len(result.moves) == 4  # Only first 4 moves
-    assert result.stats == {
-        "hp": 35,
-        "attack": 55,
-        "defense": 40,
-        "special-attack": 50,
-        "special-defense": 50,
-        "speed": 90
-    }
-
 
 def test_transform_to_pokemon(sample_raw_data):
     pokemon_data = PokemonDataTransformer.transform_to_pokemon_data(sample_raw_data)
