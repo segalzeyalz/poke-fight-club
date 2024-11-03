@@ -57,6 +57,40 @@ def create_pokemon_blueprint(pokemon_service: PokemonService) -> Blueprint:
         responses:
           404:
             description: Pokémon not found
+          200:
+            description: Pokémon data
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: Pokémon ID
+                name:
+                  type: string
+                  description: Pokémon name
+                hp:
+                  type: integer
+                  description: Hit points of the Pokémon
+                attack:
+                  type: integer
+                  description: Attack stat
+                defense:
+                  type: integer
+                  description: Defense stat
+                special_attack:
+                  type: integer
+                  description: Special attack stat
+                special_defense:
+                  type: integer
+                  description: Special defense stat
+                speed:
+                  type: integer
+                  description: Speed stat
+                types:
+                  type: array
+                  items:
+                    type: string
+                  description: List of Pokémon types
         """
         try:
             pokemon_info = pokemon_service.get_pokemon_information(name)
