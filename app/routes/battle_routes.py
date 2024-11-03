@@ -40,6 +40,19 @@ def create_battle_blueprint(battle_service):
                   description: Battle events log
           404:
             description: Pokémon not found
+          200:
+            description: Battle result with winner and battle log
+            schema:
+              type: object
+              properties:
+                winner:
+                  type: string
+                  description: Name of the winning Pokémon
+                battle_log:
+                  type: array
+                  items:
+                    type: string
+                  description: Battle events log
         """
         battle_request = BattleRequest(**request.json)
         try:
